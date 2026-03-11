@@ -2,19 +2,10 @@ import React, { useState, useEffect } from 'react';
 import '../styles.css';
 import MovieCard from './MovieCard';
 
-export default function MoviesGrid() {
-  const [movies, setMovies] = useState([]);
+export default function MoviesGrid({ movies, watchlist, toggleWatchlist }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [genre, setGenres] = useState('All Genres');
   const [rating, setRating] = useState('All');
-
-  useEffect(() => {
-    //const loadMovies = ["avengers", "inception", "interstellar", "the dark knight", "the matrix", "pulp fiction", "fight club", "forrest gump", "the lord of the rings", "the godfather"];
-    fetch('movies.json')
-      .then((response) => response.json())
-      .then((data) => setMovies(data))
-      .catch((error) => console.error('Error loading movies:', error));
-  }, []);
 
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
@@ -98,7 +89,12 @@ export default function MoviesGrid() {
       </div>
       <div className="movies-grid">
         {filteredMovies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            toggleWatchlist={toggleWatchlist}
+            isWatchlisted={watchlist.includes(movie.id)}
+          />
         ))}
       </div>
     </div>
