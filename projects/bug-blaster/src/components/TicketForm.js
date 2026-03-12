@@ -1,6 +1,6 @@
 import React,{useState} from "react";
 
-export default function TicketForm({}){
+export default function TicketForm({dispatch}){
 const [title,setTitle] = useState("");
 const [description,setDescription] = useState("");
 const [priority,setPriority] = useState("1");
@@ -18,10 +18,17 @@ const clearForm = () => {
 }
 
 const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle form submission logic here
-    clearForm();
-}
+  e.preventDefault();
+  // Handle form submission logic here
+  const ticketData = {
+    id: new Date().toISOString(),
+    title,
+    description,
+    priority,
+  };
+  console.log("Ticket submitted:", ticketData);
+  clearForm();
+};
 
 return (
   <form className="ticket-form" onSubmit={handleSubmit}>
