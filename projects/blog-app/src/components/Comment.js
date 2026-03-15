@@ -1,9 +1,10 @@
 import React from 'react' ;
+import { useContext } from 'react' ;
 
 import UserInfoContext from '../context/UserInfoContext' ;
 
 export default function Comment() {
-    const {username,isAdmin} = React.useContext(UserInfoContext) ;
+    const {username,isAdmin} = useContext(UserInfoContext) ;
     return (
         <div>
             <h3>Comment by </h3>
