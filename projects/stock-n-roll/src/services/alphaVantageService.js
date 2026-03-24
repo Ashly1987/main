@@ -15,3 +15,23 @@ export async function fetchStockData(queryParams) {
      return response.json();
     
 }
+
+export async function getDailyStockData(symbol) {
+    const json = await fetchStockData({
+        function: "TIME_SERIES_DAILY",
+        symbol: symbol
+    });
+    const timeSeries = json["Time Series (Daily)"];
+    if (!timeSeries) {
+        return null;
+    }
+    const [latestDate, previousDate] = Object.keys(timeSeries);
+    if (!latestDate || !previousDate) {
+        return null;
+    }
+    const latestClose = parseFloat(timeSeries[latestDate]["4. close"]);
+    const previousClose = parseFloat(timeSeries[previousDate]["4. close"]);
+    const performance = (((latestClose - previousClose) -1) * 100).toFixed(2);   
+    return performance;
+
+}
