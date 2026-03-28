@@ -249,6 +249,8 @@ Single CSS file: `src/index.css`
 - `<= 768px`: sidebar converts into a compact horizontal scroll navigation; topbar stacks cleanly; table containers remain scroll-safe.
 - `<= 520px`: cart rows reflow to two-line layout; floating WhatsApp button becomes icon-only circular FAB.
 
+**Breakpoint note:** The two-column billing layout is now tablet-only (`769px - 1024px`) so phones always show menu/cart in a single-column flow.
+
 ---
 
 ## Running Locally

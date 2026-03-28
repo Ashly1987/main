@@ -620,7 +620,7 @@ th {
   }
 }
 
-@media (max-width: 1024px) {
+@media (min-width: 769px) and (max-width: 1024px) {
   :root {
     --sidebar-w: 226px;
   }
@@ -639,6 +639,14 @@ th {
 }
 
 @media (max-width: 768px) {
+  .billing-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-panel {
+    position: static;
+  }
+
   .app-wrapper {
     flex-direction: column;
   }
