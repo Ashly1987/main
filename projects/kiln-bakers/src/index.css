@@ -140,6 +140,23 @@ a {
   color: #8a3d11;
 }
 
+.topbar-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cart-chip {
+  font-size: 0.82rem;
+  background: var(--primary);
+  color: #fff;
+  padding: 3px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .page-body {
   padding: 24px;
 }
@@ -603,19 +620,106 @@ th {
   }
 }
 
+@media (max-width: 1024px) {
+  :root {
+    --sidebar-w: 226px;
+  }
+
+  .page-body {
+    padding: 18px;
+  }
+
+  .topbar {
+    padding: 0 18px;
+  }
+
+  .billing-layout {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
 @media (max-width: 768px) {
+  .app-wrapper {
+    flex-direction: column;
+  }
+
   .sidebar {
     position: static;
     width: 100%;
     height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+    box-shadow: none;
+    padding: 10px 10px 8px;
+  }
+
+  .sidebar-logo {
+    margin-bottom: 10px;
+    padding: 10px 12px;
+  }
+
+  .sidebar-logo h1 {
+    font-size: 1.1rem;
+  }
+
+  .sidebar-logo span {
+    display: none;
+  }
+
+  .sidebar-nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+  }
+
+  .nav-item {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 9px 12px;
+    font-size: 0.82rem;
+  }
+
+  .nav-item:hover {
+    transform: none;
   }
 
   .main-content {
     margin-left: 0;
   }
 
-  .app-wrapper {
+  .topbar {
+    height: auto;
+    min-height: 58px;
+    padding: 10px 14px;
+    align-items: flex-start;
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .topbar-title {
+    font-size: 1rem;
+  }
+
+  .topbar-meta {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .page-body {
+    padding: 14px;
+  }
+
+  .card-header,
+  .card-body,
+  .modal-header,
+  .modal-body,
+  .modal-footer {
+    padding-left: 12px;
+    padding-right: 12px;
   }
 
   .stats-grid {
@@ -624,6 +728,74 @@ th {
 
   .product-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  table {
+    min-width: 680px;
+  }
+
+  .whatsapp-fab {
+    right: 14px;
+    bottom: 14px;
+    padding: 10px 14px 10px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 520px) {
+  .billing-layout {
+    gap: 12px;
+  }
+
+  .chip {
+    padding: 5px 10px;
+    font-size: 0.78rem;
+  }
+
+  .cart-items {
+    max-height: none;
+  }
+
+  .cart-item {
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      "name qty qty"
+      "price price remove";
+    row-gap: 6px;
+    align-items: center;
+  }
+
+  .cart-item > div:first-child {
+    grid-area: name;
+  }
+
+  .cart-item > .qty-control {
+    grid-area: qty;
+    justify-self: end;
+  }
+
+  .cart-item > div:nth-child(3) {
+    grid-area: price;
+    text-align: left !important;
+    min-width: 0 !important;
+  }
+
+  .cart-item > button {
+    grid-area: remove;
+    justify-self: end;
+  }
+
+  .whatsapp-fab {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .whatsapp-fab span {
+    display: none;
   }
 }
 

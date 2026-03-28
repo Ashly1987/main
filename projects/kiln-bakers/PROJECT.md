@@ -2,6 +2,10 @@
 
 A full-featured **Bakery Point-of-Sale (POS)** system built with React + Vite, backed by Supabase (PostgreSQL) for cloud data storage.
 
+## Documentation Rule
+
+- Any feature/UI/data-flow update in the app must be reflected in this file (`PROJECT.md`) in the same change set.
+
 ---
 
 ## Tech Stack
@@ -238,8 +242,12 @@ Single CSS file: `src/index.css`
   --header-h: 68px;
 ```
 
-**Layout:** Flex row — fixed sidebar + scrollable main content area.  
-**Responsive:** Grid columns collapse at `768px`.
+**Layout:** Flex row — fixed sidebar + scrollable main content area on desktop/tablet.  
+**Responsive behavior:**
+
+- `<= 1024px`: tighter spacing and reduced sidebar width.
+- `<= 768px`: sidebar converts into a compact horizontal scroll navigation; topbar stacks cleanly; table containers remain scroll-safe.
+- `<= 520px`: cart rows reflow to two-line layout; floating WhatsApp button becomes icon-only circular FAB.
 
 ---
 

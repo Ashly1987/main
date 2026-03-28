@@ -8,20 +8,9 @@ export default function Topbar({ title }) {
   return (
     <header className="topbar">
       <span className="topbar-title">{title}</span>
-      <div className="flex items-center gap-3">
+      <div className="topbar-meta">
         {itemCount > 0 && (
-          <span
-            style={{
-              fontSize: ".82rem",
-              background: "var(--primary)",
-              color: "#fff",
-              padding: "3px 10px",
-              borderRadius: 20,
-              display: "flex",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
+          <span className="cart-chip">
             <ShoppingCart size={13} /> {itemCount} item
             {itemCount > 1 ? "s" : ""} in cart
           </span>
