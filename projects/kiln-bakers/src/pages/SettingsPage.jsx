@@ -12,6 +12,7 @@ export default function SettingsPage() {
     taxRate: 5,
     upiId: "",
     upiName: "",
+    whatsappNumber: "",
   });
   const [loading, setLoading] = useState(true);
 
@@ -37,6 +38,7 @@ export default function SettingsPage() {
     try {
       await settingsService.save(form);
       toast.success("Settings saved!");
+      window.dispatchEvent(new Event("settings:updated"));
     } catch (error) {
       toast.error(error.message || "Failed to save settings");
     }
@@ -79,6 +81,19 @@ export default function SettingsPage() {
                   value={form.storePhone}
                   onChange={(e) => set("storePhone", e.target.value)}
                 />
+              </div>
+              <div className="form-group">
+                <label className="form-label">WhatsApp Number</label>
+                <input
+                  className="form-control"
+                  value={form.whatsappNumber}
+                  onChange={(e) => set("whatsappNumber", e.target.value)}
+                  placeholder="+91 98765 43210"
+                />
+                <small style={{ color: "var(--text-muted)", fontSize: 12 }}>
+                  Include country code (e.g. +91). A chat button will appear on
+                  screen.
+                </small>
               </div>
               <div className="form-group">
                 <label className="form-label">GST / Tax Rate (%)</label>

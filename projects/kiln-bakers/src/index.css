@@ -626,3 +626,39 @@ th {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* ── WhatsApp floating action button ────────────────────── */
+.whatsapp-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #25d366;
+  color: #fff;
+  border-radius: 50px;
+  padding: 12px 18px 12px 14px;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.45);
+  font-family: "Nunito", sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+  user-select: none;
+}
+
+.whatsapp-fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(37, 211, 102, 0.55);
+  background: #1db954;
+}
+
+.whatsapp-fab:active {
+  transform: translateY(0);
+  box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
+}

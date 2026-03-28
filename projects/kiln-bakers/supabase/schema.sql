@@ -34,12 +34,16 @@ create table if not exists app_settings (
   tax_rate numeric(5,2) not null default 5,
   upi_id text not null,
   upi_name text not null,
+  whatsapp_number text not null default '',
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
-insert into app_settings (id, store_name, store_address, store_phone, tax_rate, upi_id, upi_name)
-values (1, 'Kiln Bakers', '12, Baker Street, Chennai – 600001', '+91 98765 43210', 5, 'kilnbakers@upi', 'Kiln Bakers')
+-- If the table already exists, add the column (safe to run multiple times):
+alter table app_settings add column if not exists whatsapp_number text not null default '';
+
+insert into app_settings (id, store_name, store_address, store_phone, tax_rate, upi_id, upi_name, whatsapp_number)
+values (1, 'Kiln Bakers', '12, Baker Street, Chennai – 600001', '+91 98765 43210', 5, 'kilnbakers@upi', 'Kiln Bakers', '')
 on conflict (id) do nothing;
 
 -- Optional: enable RLS and define policies to allow public anon read/write for this POS app.

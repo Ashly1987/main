@@ -8,6 +8,7 @@ const defaultSettings = {
   taxRate: 5,
   upiId: 'kilnbakers@upi',
   upiName: 'Kiln Bakers',
+  whatsappNumber: '',
 };
 
 let productsSeeded = false;
@@ -70,6 +71,7 @@ async function ensureSettingsSeeded() {
       tax_rate: defaultSettings.taxRate,
       upi_id: defaultSettings.upiId,
       upi_name: defaultSettings.upiName,
+      whatsapp_number: defaultSettings.whatsappNumber,
     });
     if (insertError) throw insertError;
   }
@@ -188,6 +190,7 @@ export const settingsService = {
       taxRate: Number(data.tax_rate),
       upiId: data.upi_id,
       upiName: data.upi_name,
+      whatsappNumber: data.whatsapp_number || '',
     };
   },
 
@@ -200,6 +203,7 @@ export const settingsService = {
       tax_rate: settings.taxRate,
       upi_id: settings.upiId,
       upi_name: settings.upiName,
+      whatsapp_number: settings.whatsappNumber,
       updated_at: new Date().toISOString(),
     });
     if (error) throw error;
