@@ -251,6 +251,8 @@ Single CSS file: `src/index.css`
 
 **Breakpoint note:** The two-column billing layout is now tablet-only (`769px - 1024px`) so phones always show menu/cart in a single-column flow.
 
+**Billing sizing note:** On larger screens the cart column uses adaptive width (`clamp(280px, 32vw, 390px)`) so the menu area scales with page size and does not feel squeezed.
+
 ---
 
 ## Running Locally
