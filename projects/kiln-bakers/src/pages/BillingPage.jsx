@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { productService, orderService, settingsService } from "../data/storage";
 import { useCart } from "../context/CartContext";
 import { CATEGORIES } from "../data/seedProducts";
@@ -10,16 +10,43 @@ import { Minus, Plus, X, Printer, QrCode, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function BillingPage() {
-  const [products] = useState(() => productService.getAll());
+  const [products, setProducts] = useState([]);
   const [catFilter, setCatFilter] = useState("All");
   const [search, setSearch] = useState("");
-  const [settings] = useState(() => settingsService.get());
+  const [settings, setSettings] = useState({
+    storeName: "Kiln Bakers",
+    storeAddress: "",
+    storePhone: "",
+    taxRate: 5,
+    upiId: "",
+    upiName: "",
+  });
+  const [loading, setLoading] = useState(true);
   const [discount, setDiscount] = useState(0);
   const [showQR, setShowQR] = useState(false);
   const [lastOrder, setLastOrder] = useState(null);
   const [showPrint, setShowPrint] = useState(false);
 
   const { cart, addToCart, removeFromCart, updateQty, clearCart } = useCart();
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [productRows, settingsRow] = await Promise.all([
+          productService.getAll(),
+          settingsService.get(),
+        ]);
+        setProducts(productRows);
+        setSettings(settingsRow);
+      } catch (error) {
+        toast.error(error.message || "Failed to load data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const available = products.filter((p) => p.available);
   const filtered = available.filter((p) => {
@@ -34,33 +61,37 @@ export default function BillingPage() {
     Number(discount) || 0,
   );
 
-  const handleCheckout = (payNow = false) => {
+  const handleCheckout = async (payNow = false) => {
     if (cart.length === 0) {
       toast.error("Cart is empty");
       return;
     }
-    const order = orderService.add({
-      items: cart.map((i) => ({
-        id: i.id,
-        name: i.name,
-        category: i.category,
-        price: i.price,
-        qty: i.qty,
-      })),
-      subtotal,
-      discountAmt,
-      taxAmt,
-      total,
-      taxRate: settings.taxRate,
-      paymentStatus: payNow ? "pending" : "paid",
-      paymentMethod: payNow ? "UPI" : "Cash",
-    });
-    setLastOrder(order);
-    clearCart();
-    setDiscount(0);
-    toast.success(`Order ${order.billNo} created!`);
-    if (payNow) setShowQR(true);
-    else setShowPrint(true);
+    try {
+      const order = await orderService.add({
+        items: cart.map((i) => ({
+          id: i.id,
+          name: i.name,
+          category: i.category,
+          price: i.price,
+          qty: i.qty,
+        })),
+        subtotal,
+        discountAmt,
+        taxAmt,
+        total,
+        taxRate: settings.taxRate,
+        paymentStatus: payNow ? "pending" : "paid",
+        paymentMethod: payNow ? "UPI" : "Cash",
+      });
+      setLastOrder(order);
+      clearCart();
+      setDiscount(0);
+      toast.success(`Order ${order.billNo} created!`);
+      if (payNow) setShowQR(true);
+      else setShowPrint(true);
+    } catch (error) {
+      toast.error(error.message || "Failed to create order");
+    }
   };
 
   return (
@@ -106,7 +137,11 @@ export default function BillingPage() {
               </div>
             </div>
 
-            {filtered.length === 0 ? (
+            {loading ? (
+              <div className="empty-state">
+                <p>Loading menu...</p>
+              </div>
+            ) : filtered.length === 0 ? (
               <div className="empty-state">
                 <ShoppingCart size={40} />
                 <p>No items found</p>

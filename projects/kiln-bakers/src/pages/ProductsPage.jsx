@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { productService } from "../data/storage";
 import { CATEGORIES } from "../data/seedProducts";
 import Topbar from "../components/Topbar";
@@ -8,14 +8,28 @@ import toast from "react-hot-toast";
 import { formatCurrency } from "../utils/format";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState(() => productService.getAll());
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [catFilter, setCatFilter] = useState("All");
   const [showForm, setShowForm] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
-  const reload = () => setProducts(productService.getAll());
+  const reload = async () => {
+    try {
+      const rows = await productService.getAll();
+      setProducts(rows);
+    } catch (error) {
+      toast.error(error.message || "Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    reload();
+  }, []);
 
   const filtered = products.filter((p) => {
     const matchCat = catFilter === "All" || p.category === catFilter;
@@ -23,24 +37,32 @@ export default function ProductsPage() {
     return matchCat && matchSearch;
   });
 
-  const handleSave = (data) => {
-    if (editProduct) {
-      productService.update(editProduct.id, data);
-      toast.success("Product updated");
-    } else {
-      productService.add(data);
-      toast.success("Product added");
+  const handleSave = async (data) => {
+    try {
+      if (editProduct) {
+        await productService.update(editProduct.id, data);
+        toast.success("Product updated");
+      } else {
+        await productService.add(data);
+        toast.success("Product added");
+      }
+      await reload();
+      setShowForm(false);
+      setEditProduct(null);
+    } catch (error) {
+      toast.error(error.message || "Failed to save product");
     }
-    reload();
-    setShowForm(false);
-    setEditProduct(null);
   };
 
-  const handleDelete = (id) => {
-    productService.delete(id);
-    toast.success("Product deleted");
-    reload();
-    setConfirmDelete(null);
+  const handleDelete = async (id) => {
+    try {
+      await productService.delete(id);
+      toast.success("Product deleted");
+      await reload();
+      setConfirmDelete(null);
+    } catch (error) {
+      toast.error(error.message || "Failed to delete product");
+    }
   };
 
   const openEdit = (p) => {
@@ -108,7 +130,13 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.length === 0 ? (
+                {loading ? (
+                  <tr>
+                    <td colSpan={6} className="empty-state">
+                      Loading products...
+                    </td>
+                  </tr>
+                ) : filtered.length === 0 ? (
                   <tr>
                     <td colSpan={6} className="empty-state">
                       No products found.

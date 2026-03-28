@@ -1,19 +1,45 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { settingsService } from "../data/storage";
 import Topbar from "../components/Topbar";
-import { CATEGORIES } from "../data/seedProducts";
 import toast from "react-hot-toast";
 import { Save } from "lucide-react";
 
 export default function SettingsPage() {
-  const [form, setForm] = useState(settingsService.get());
+  const [form, setForm] = useState({
+    storeName: "Kiln Bakers",
+    storeAddress: "",
+    storePhone: "",
+    taxRate: 5,
+    upiId: "",
+    upiName: "",
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const data = await settingsService.get();
+        setForm(data);
+      } catch (error) {
+        toast.error(error.message || "Failed to load settings");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
 
   const set = (key, val) => setForm((f) => ({ ...f, [key]: val }));
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-    settingsService.save(form);
-    toast.success("Settings saved!");
+    try {
+      await settingsService.save(form);
+      toast.success("Settings saved!");
+    } catch (error) {
+      toast.error(error.message || "Failed to save settings");
+    }
   };
 
   return (
@@ -24,6 +50,11 @@ export default function SettingsPage() {
           <div className="card-header">Store Settings</div>
           <form onSubmit={handleSave}>
             <div className="card-body">
+              {loading && (
+                <p className="text-muted" style={{ marginBottom: 12 }}>
+                  Loading settings...
+                </p>
+              )}
               <div className="form-group">
                 <label className="form-label">Store Name</label>
                 <input

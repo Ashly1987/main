@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { orderService } from "../data/storage";
 import { formatCurrency, monthName } from "../utils/format";
 import Topbar from "../components/Topbar";
@@ -15,6 +15,7 @@ import {
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import { Download } from "lucide-react";
+import toast from "react-hot-toast";
 
 const COLORS = [
   "#b5451b",
@@ -68,9 +69,26 @@ function aggregate(orders) {
 export default function ReportsPage() {
   const [year, setYear] = useState(THIS_YEAR);
   const [month, setMonth] = useState(THIS_MONTH);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const reportRef = useRef();
 
-  const orders = orderService.getByMonth(year, month);
+  useEffect(() => {
+    const loadOrders = async () => {
+      setLoading(true);
+      try {
+        const rows = await orderService.getByMonth(year, month);
+        setOrders(rows);
+      } catch (error) {
+        toast.error(error.message || "Failed to load monthly report");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadOrders();
+  }, [year, month]);
+
   const { totalRevenue, totalOrders, topProducts, categoryData } =
     aggregate(orders);
 
@@ -163,7 +181,11 @@ export default function ReportsPage() {
             </p>
           </div>
 
-          {orders.length === 0 ? (
+          {loading ? (
+            <div className="empty-state">
+              <p>Loading report...</p>
+            </div>
+          ) : orders.length === 0 ? (
             <div className="empty-state">
               <p>No orders found for {monthName(year, month)}.</p>
             </div>
